@@ -105,7 +105,7 @@
     position:relative;overflow:hidden;
   }
   .statecard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--steel);transition:.4s}
-  .s-armado .statecard::before{background:var(--amber)}
+  .s-activado .statecard::before{background:var(--amber)}
   .s-intrusion .statecard::before{background:var(--red)}
   .s-ok .statecard::before{background:var(--green)}
   .state-name{font-family:'Fraunces',serif;font-size:23px;font-weight:600;color:#fff;display:flex;align-items:center;gap:11px}
@@ -137,6 +137,8 @@
   .pill.fill{background:var(--amber);color:var(--ink);border-color:transparent;transform:scale(1.06)}
   .pill.bad{background:var(--red);color:#fff;border-color:transparent;animation:shake .35s}
   @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+
+  .seqhint{font-size:12px;color:var(--steel);line-height:1.45;margin-top:-6px;font-style:italic}
 
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px;
     font-size:12px;color:var(--ice)}
@@ -172,8 +174,8 @@
 
   <div class="top">
     <div>
-      <div class="eyebrow">Robótica · micro:bit &amp; MakeCode</div>
-      <h1>Una casa que <em>sabe</em><br>cuándo entra un extraño</h1>
+      <div class="eyebrow">Robótica · micro:bit y MakeCode</div>
+      <h1>Una casa que <em>sabe</em><br>cuándo entra un intruso</h1>
       <div class="by">Ficha 3 · Sistema de alarma con código de desactivación &nbsp;·&nbsp; <b>Laura Castro</b> · <b>Analía Sáenz</b></div>
     </div>
   </div>
@@ -294,12 +296,12 @@
   <div class="panel" id="panel">
     <div class="statecard">
       <div class="state-name"><span class="state-ico" id="sIco">○</span><span id="sName">Apagado</span></div>
-      <div class="state-desc" id="sDesc">El sistema está en reposo. La matriz muestra una <b>X</b> y el servo mantiene la puerta abierta a 0°. Presioná <b>A</b> para armar la alarma.</div>
+      <div class="state-desc" id="sDesc">El sistema está en reposo. La matriz muestra una <b>X</b> y el servo mantiene la puerta abierta a 0°. Presioná <b>A</b> para activar la alarma.</div>
       <div class="state-tag" id="sTag">estado · reposo</div>
     </div>
 
     <div class="controls">
-      <button class="btn primary full" id="btnArm">Armar alarma <span class="k">A</span></button>
+      <button class="btn primary full" id="btnArm">Activar alarma <span class="k">A</span></button>
       <button class="btn danger" id="btnIntr">Simular intruso</button>
       <button class="btn" id="btnReset">Reiniciar</button>
     </div>
@@ -313,6 +315,7 @@
       <button class="btn" id="kA" style="padding:8px 14px">A</button>
       <button class="btn" id="kB" style="padding:8px 14px">B</button>
     </div>
+    <div class="seqhint" id="seqHint" style="display:none">Probá un código equivocado: el contador se reinicia y la alarma no se apaga.</div>
 
     <div class="legend">
       <span><span class="swatch" style="background:#FFB627"></span>Activada</span>
@@ -322,7 +325,7 @@
   </div>
 
   <div class="foot">
-    <span>3.º año Informática · Robótica · Docente <b>Domingo Pérez</b></span>
+    <span>3.º año Informática · Docente <b>Domingo Pérez</b></span>
     <span>makecode.microbit.org/_KCvAKrbJmTVX</span>
   </div>
 </div>
@@ -365,6 +368,7 @@ const liveDot=document.getElementById('liveDot'), stampTxt=document.getElementBy
 const sIco=document.getElementById('sIco'), sName=document.getElementById('sName'),
       sDesc=document.getElementById('sDesc'), sTag=document.getElementById('sTag');
 const seqRow=document.getElementById('seqRow');
+const seqHint=document.getElementById('seqHint');
 const pills=[...document.querySelectorAll('.pill')];
 
 let blinkTimer=null, paso=0, state='off';
@@ -374,7 +378,7 @@ function setStamp(t,color){liveDot.style.color=color;liveDot.style.background=co
 
 function setState(s){
   state=s; clearBlink();
-  stage.classList.remove('s-armado','s-intrusion','s-ok');
+  stage.classList.remove('s-activado','s-intrusion','s-ok');
   wrap.classList.remove('ringing','door-open');
   waves.style.opacity=0; beam.setAttribute('opacity',0);
   liveDot.classList.remove('live');
@@ -386,22 +390,22 @@ function setState(s){
     setStamp('Sistema apagado','#5A6B82');
     sIco.textContent='○'; sIco.style.color='#5A6B82';
     sName.textContent='Apagado';
-    sDesc.innerHTML='El sistema está en reposo. La matriz muestra una <b>X</b> y el servo mantiene la puerta abierta a 0°. Presioná <b>A</b> para armar la alarma.';
+    sDesc.innerHTML='El sistema está en reposo. La matriz muestra una <b>X</b> y el servo mantiene la puerta abierta a 0°. Presioná <b>A</b> para activar la alarma.';
     sTag.textContent='estado · reposo';
-    seqRow.style.display='none';
+    seqRow.style.display='none'; seqHint.style.display='none';
   }
 
-  if(s==='armado'){
-    stage.classList.add('s-armado');
+  if(s==='activado'){
+    stage.classList.add('s-activado');
     draw(PAT.HOUSE,'amber'); servoArm.setAttribute('transform','rotate(0)');
     door.style.transform='rotateY(0deg)'; roomGlow.setAttribute('opacity','.16');
     glass.setAttribute('fill','#16263F');
     liveDot.classList.add('live'); setStamp('Alarma activada','#FFB627');
     sIco.textContent='⌂'; sIco.style.color='#FFB627';
     sName.textContent='Activada';
-    sDesc.innerHTML='Al presionar <b>A</b> el sistema guarda el nivel de luz actual (<code>luzInicial</code>) y muestra una <b>casa</b>. Ahora vigila la ventana. Probá una <b>intruso</b>.';
+    sDesc.innerHTML='Al presionar <b>A</b> el sistema guarda el nivel de luz actual (<code>luzInicial</code>) y muestra una <b>casa</b>. Ahora vigila la ventana. Probá el ingreso de un <b>intruso</b>.';
     sTag.textContent='botón A · luz guardada';
-    seqRow.style.display='none';
+    seqRow.style.display='none'; seqHint.style.display='none';
   }
 
   if(s==='intrusion'){
@@ -414,9 +418,9 @@ function setState(s){
     liveDot.classList.add('live'); setStamp('¡INTRUSO!','#E5383B');
     sIco.textContent='⚠'; sIco.style.color='#E5383B';
     sName.textContent='Intruso';
-    sDesc.innerHTML='La luz cambió más de <b>50 unidades</b>. Suena el buzzer a <b>988 Hz</b>, los LEDs parpadean con una <b>calavera</b> y el servo gira a <b>90°</b> cerrando la puerta. Ingresá <b>A → B → A</b>.';
+    sDesc.innerHTML='La luz cambió más de <b>50 unidades</b>. Suena el buzzer a <b>988 Hz</b>, los LEDs parpadean con una <b>calavera</b> y el servo gira a <b>90°</b> cerrando la puerta. Ingresá <b>A - B - A</b>.';
     sTag.textContent='luz Δ > 50 · servo 90°';
-    seqRow.style.display='flex';
+    seqRow.style.display='flex'; seqHint.style.display='block';
     paso=0; updatePills();
     blinkTimer=setInterval(()=>{
       const cur=dots[0][0].className.baseVal.includes('on');
@@ -434,9 +438,9 @@ function setState(s){
     setStamp('Acceso permitido','#2FBF71');
     sIco.textContent='✓'; sIco.style.color='#2FBF71';
     sName.textContent='Desactivada';
-    sDesc.innerHTML='Secuencia <b>A → B → A</b> correcta. El buzzer se calla, el servo vuelve a <b>0°</b> abriendo la puerta y la matriz muestra un <b>tilde</b>. El sistema regresa al reposo.';
+    sDesc.innerHTML='Secuencia <b>A - B - A</b> correcta. El buzzer se calla, el servo vuelve a <b>0°</b> abriendo la puerta y la matriz muestra un <b>tilde</b>. El sistema regresa al reposo.';
     sTag.textContent='código ok · servo 0°';
-    seqRow.style.display='none';
+    seqRow.style.display='none'; seqHint.style.display='none';
     setTimeout(()=>{ if(state==='ok') setState('off'); },2600);
   }
 }
@@ -448,7 +452,7 @@ function flashKey(el){el.style.background='var(--amber)';el.style.color='#0E1726
   setTimeout(()=>{el.style.background='';el.style.color='';},160);}
 function pressBtnEl(el){el.setAttribute('fill','#FFB627');setTimeout(()=>el.setAttribute('fill','#26405C'),170);}
 
-/* sequence logic: A->B->A, mirrors the real micro:bit code */
+/* sequence logic: A - B - A, mirrors the real micro:bit code */
 function inputBtn(b){
   if(state!=='intrusion') return;
   if(b==='A'){ flashKey(kA); pressBtnEl(btnA);
@@ -459,26 +463,40 @@ function inputBtn(b){
   updatePills();
 }
 function fail(){
-  paso=0; pills.forEach(p=>p.classList.add('bad'));
-  setTimeout(()=>updatePills(),360);
+  paso=0;
+  pills.forEach(p=>p.classList.add('bad'));
+  // mensaje claro de error, manteniendo la alarma sonando
+  sName.textContent='Código incorrecto';
+  sDesc.innerHTML='Botón fuera de orden: la secuencia se <b>reinició a cero</b>. La alarma sigue sonando. Empezá de nuevo con <b>A - B - A</b>.';
+  sTag.textContent='pasoCodigo = 0 · reintentá';
+  setStamp('Código incorrecto','#E5383B');
+  setTimeout(()=>{
+    updatePills();
+    if(state==='intrusion'){
+      sName.textContent='Intruso';
+      sDesc.innerHTML='La luz cambió más de <b>50 unidades</b>. Suena el buzzer a <b>988 Hz</b>, los LEDs parpadean con una <b>calavera</b> y el servo gira a <b>90°</b> cerrando la puerta. Ingresá <b>A - B - A</b>.';
+      sTag.textContent='luz Δ > 50 · servo 90°';
+      setStamp('¡INTRUSO!','#E5383B');
+    }
+  },1300);
 }
 
 /* ---------- wire controls ---------- */
-document.getElementById('btnArm').onclick=()=>{ if(state==='off') setState('armado'); };
-document.getElementById('btnIntr').onclick=()=>{ if(state==='armado') setState('intrusion');
-  else if(state==='off'){ setState('armado'); setTimeout(()=>setState('intrusion'),520);} };
+document.getElementById('btnArm').onclick=()=>{ if(state==='off') setState('activado'); };
+document.getElementById('btnIntr').onclick=()=>{ if(state==='activado') setState('intrusion');
+  else if(state==='off'){ setState('activado'); setTimeout(()=>setState('intrusion'),520);} };
 document.getElementById('btnReset').onclick=()=>setState('off');
 const kA=document.getElementById('kA'), kB=document.getElementById('kB');
 kA.onclick=()=>inputBtn('A'); kB.onclick=()=>inputBtn('B');
 // clickable board buttons inside the SVG
 document.getElementById('btnA').style.cursor='pointer';
 document.getElementById('btnB').style.cursor='pointer';
-document.getElementById('btnA').onclick=()=>{ if(state==='off')setState('armado'); else inputBtn('A'); };
+document.getElementById('btnA').onclick=()=>{ if(state==='off')setState('activado'); else inputBtn('A'); };
 document.getElementById('btnB').onclick=()=>inputBtn('B');
 
 /* keyboard */
 window.addEventListener('keydown',e=>{
-  if(e.key==='a'||e.key==='A'){ if(state==='off')setState('armado'); else inputBtn('A'); }
+  if(e.key==='a'||e.key==='A'){ if(state==='off')setState('activado'); else inputBtn('A'); }
   if(e.key==='b'||e.key==='B'){ inputBtn('B'); }
   if(e.key==='i'||e.key==='I'){ document.getElementById('btnIntr').click(); }
   if(e.key==='Escape'){ setState('off'); }
