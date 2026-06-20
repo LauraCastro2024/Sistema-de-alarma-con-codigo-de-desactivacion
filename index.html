@@ -77,11 +77,13 @@
   .stamp{
     position:absolute;top:14px;left:14px;
     font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
-    letter-spacing:.18em;text-transform:uppercase;
+    letter-spacing:.14em;text-transform:uppercase;
     padding:7px 12px;border-radius:999px;
     background:rgba(14,23,38,.74);backdrop-filter:blur(4px);
     border:1px solid var(--line);color:var(--ice);
-    display:flex;align-items:center;gap:8px;
+    display:inline-flex;align-items:center;gap:8px;
+    white-space:nowrap;width:max-content;max-width:calc(100% - 28px);
+    z-index:3;
   }
   .dot{width:9px;height:9px;border-radius:50%;background:var(--steel);
     box-shadow:0 0 0 0 rgba(0,0,0,0);transition:.4s}
@@ -147,8 +149,18 @@
   .foot b{color:var(--ice);font-weight:500}
 
   @media (max-width:900px){
-    .stage{grid-template-columns:1fr;gap:24px}
+    body{align-items:flex-start;padding-top:18px}
+    .stage{grid-template-columns:1fr;gap:18px}
     .state-desc{min-height:auto}
+    .scene{max-height:46vh;margin:0 auto}
+    .house-wrap{max-width:440px;margin:0 auto;width:100%}
+    h1{font-size:clamp(24px,7vw,34px)}
+    .panel{max-width:520px;margin:0 auto;width:100%}
+  }
+  @media (max-width:560px){
+    .scene{max-height:38vh}
+    .controls{grid-template-columns:1fr}
+    .btn.danger,.btn#btnReset{grid-column:1 / -1}
   }
   @media (prefers-reduced-motion:reduce){
     .scene *,.btn,.dot{transition:none!important;animation:none!important}
@@ -310,7 +322,7 @@
   </div>
 
   <div class="foot">
-    <span>3.º año Informática · Docente <b>Domingo Pérez</b></span>
+    <span>3.º año Informática · Robótica · Docente <b>Domingo Pérez</b></span>
     <span>makecode.microbit.org/_KCvAKrbJmTVX</span>
   </div>
 </div>
