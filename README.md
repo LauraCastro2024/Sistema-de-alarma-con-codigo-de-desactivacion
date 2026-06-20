@@ -11,7 +11,7 @@ Proyecto de robótica desarrollado con la placa **micro:bit** y el entorno **Mak
 |---|---|
 | Armar la alarma | Botón **Armar** o tecla **A** |
 | Simular una intrusión | Botón **Simular intrusión** o tecla **I** |
-| Ingresar el código | Botones **A** y **B** (secuencia correcta: A → B → A) |
+| Ingresar el código | Botones **A** y **B** (secuencia correcta: A - B - A) |
 | Reiniciar | Botón **Reiniciar** o tecla **Esc** |
 
 Si ingresás un botón fuera de orden, el conteo se reinicia: es la misma lógica de seguridad que el sistema real.
@@ -23,7 +23,7 @@ Si ingresás un botón fuera de orden, el conteo se reinicia: es la misma lógic
 3. **Intrusión** — El buzzer suena a 988 Hz, los LEDs parpadean con una calavera y el servomotor gira a 90° simulando el cierre de la puerta.
 4. **Desactivación** — Se debe ingresar la secuencia A → B → A. La variable `pasoCodigo` controla el avance; si es correcta, el servo vuelve a 0° y la matriz muestra un tilde.
 
-## 🧩 Componentes
+## Componentes
 
 - Placa **micro:bit** (cerebro del sistema)
 - **Sensor de luz** (matriz de LEDs usada como fotodiodo) — integrado
@@ -37,7 +37,7 @@ Si ingresás un botón fuera de orden, el conteo se reinicia: es la misma lógic
 
 Variables de estado · estructuras condicionales · bucles · lógica de secuencia · máquinas de estado · razonamiento causa-efecto · depuración.
 
-## 🔗 Enlaces
+## Enlaces
 
 - **Proyecto en MakeCode:** https://makecode.microbit.org/_KCvAKrbJmTVX
 
