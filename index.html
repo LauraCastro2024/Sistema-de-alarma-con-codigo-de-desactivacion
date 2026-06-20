@@ -315,7 +315,7 @@
     </div>
 
     <div class="legend">
-      <span><span class="swatch" style="background:#FFB627"></span>Armada</span>
+      <span><span class="swatch" style="background:#FFB627"></span>Activada</span>
       <span><span class="swatch" style="background:#E5383B"></span>Intruso</span>
       <span><span class="swatch" style="background:#2FBF71"></span>Desactivada</span>
     </div>
@@ -396,9 +396,9 @@ function setState(s){
     draw(PAT.HOUSE,'amber'); servoArm.setAttribute('transform','rotate(0)');
     door.style.transform='rotateY(0deg)'; roomGlow.setAttribute('opacity','.16');
     glass.setAttribute('fill','#16263F');
-    liveDot.classList.add('live'); setStamp('Alarma armada','#FFB627');
+    liveDot.classList.add('live'); setStamp('Alarma activada','#FFB627');
     sIco.textContent='⌂'; sIco.style.color='#FFB627';
-    sName.textContent='Armada';
+    sName.textContent='Activada';
     sDesc.innerHTML='Al presionar <b>A</b> el sistema guarda el nivel de luz actual (<code>luzInicial</code>) y muestra una <b>casa</b>. Ahora vigila la ventana. Probá una <b>intruso</b>.';
     sTag.textContent='botón A · luz guardada';
     seqRow.style.display='none';
